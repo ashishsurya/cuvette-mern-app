@@ -1,3 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .nav-link {
+    @apply px-4 py-2 border font-bold tracking-wide border-[#6ba1f6] rounded-md cursor-pointer  text-[#6ba1f6];
+  }
+
+
+  .hero-img {
+    @apply w-[300px] h-[300px]
+  }
+}

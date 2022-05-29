@@ -3,7 +3,12 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    fontFamily: {
+      'inter' : "'DM Sans', sans-serif"
+    },
+    extend: {
+      
+    },
   },
   plugins: [],
 }
