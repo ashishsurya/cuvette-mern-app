@@ -8,7 +8,7 @@ const NavBar = ({ primaryButton, secondaryButton, mainLinks, to }) => {
   return (
     <div className='flex items-center justify-between px-7 py-6'>
       {/* LOGO */}
-      <Link to={''}>
+      <Link to={'/'}>
         <div className='flex items-center gap-3 cursor-pointer'>
           <img src={LOGO} className='w-10 h-10 ' title='Cuvette Mern App' />
           {to && (
@@ -27,11 +27,8 @@ const NavBar = ({ primaryButton, secondaryButton, mainLinks, to }) => {
         {mainLinks ? (
           <ul className='flex gap-6'>
             {mainLinks.map((mainLink) => (
-              <Link to={mainLink.slug}>
-                <li
-                  className='cursor-pointer text-[#1E38C1] hover:border-b-2 border-[#1E38C1] '
-                  key={mainLink.slug}
-                >
+              <Link to={mainLink.slug} key={mainLink.slug}>
+                <li className='cursor-pointer text-[#1E38C1] hover:border-b-2 border-[#1E38C1] '>
                   {mainLink.label}
                 </li>
               </Link>
