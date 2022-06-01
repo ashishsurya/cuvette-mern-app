@@ -11,9 +11,7 @@ const initialState = {
   message: '',
 };
 
-
-
-const reducer = (state, action) => {
+function reducer(state, action) {
   switch (action.type) {
     case Constants.SHOW_SNACKBAR:
       return { ...state, show: true, message: action.payload };
@@ -24,9 +22,7 @@ const reducer = (state, action) => {
     default:
       return state;
   }
-};
-
-
+}
 
 const SnackBarProvider = ({ children }) => {
   return (
@@ -36,8 +32,8 @@ const SnackBarProvider = ({ children }) => {
   );
 };
 
-export const useSnackBarState = () => {
+export function useSnackBarState() {
   return useContext(SnackBarContext);
-};
+}
 
 export default SnackBarProvider;

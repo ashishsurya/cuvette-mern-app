@@ -1,7 +1,13 @@
 import Snackbar from '@mui/material/Snackbar';
-import { Route, Routes } from 'react-router-dom';
+import { onAuthStateChanged } from 'firebase/auth';
+import { useEffect } from 'react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import { auth } from '../firebase';
 import { useSnackBarState } from './context/SnackBarContext';
+import { useUserState } from './context/UserContext';
 import HomeScreen from './screens/HomeScreen';
+import { useLocalStorage } from 'react-haiku';
+
 import StudentHomeScreen from './screens/StudentHomeScreen';
 import StudentLoginScreen from './screens/StudentLoginScreen';
 import StudentRegisterScreen from './screens/StudentRegisterScreen';
@@ -11,28 +17,38 @@ import TeacherRegisterScreen from './screens/TeacherRegisterScreen';
 import Constants from './utils/Constants';
 
 function App() {
-  const [{ show, message }, dispatch] = useSnackBarState();
+  const [{ show, message }, snackBarDispatch] = useSnackBarState();
+  const [{ user }, userDispatch] = useUserState();
+  const [userType, setUserType] = useLocalStorage('userType');
 
   console.log({ show, message });
+  console.log(user);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log(userType)
+    onAuthStateChanged(auth, function (user) {
+      if (user && userType === 'student') {
+        console.log('INTO THE IF IN USEEFFCET');
+        userDispatch({ type: Constants.SIGN_IN, payload: user });
+        navigate('/student/app');
+      }
+    });
+  }, []);
 
   return (
     <div className='font-inter max-w-6xl mx-auto'>
       <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={show}
-        autoHideDuration={3000}
+        autoHideDuration={5000}
         onClose={() => {
-          dispatch({ type: Constants.CLOSE_SNACKBAR });
+          snackBarDispatch({ type: Constants.CLOSE_SNACKBAR });
         }}
         message={message}
       />
-      <button
-        onClick={() => {
-          dispatch({ type: Constants.SHOW_SNACKBAR, payload: 'fdvvfhgbvv' });
-        }}
-      >
-        Show Snackbar
-      </button>
+
       <Routes>
         <Route path='' element={<HomeScreen />} />
         <Route path='student' element={<StudentHomeScreen />} />

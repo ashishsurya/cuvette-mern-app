@@ -3,7 +3,12 @@ import CustomForm from '../components/CustomForm';
 import CustomInput from '../components/CustomInput';
 import CustomFormBtn from '../components/CustomFormBtn';
 import { useSnackBarState } from '../context/SnackBarContext';
+import { useUserState } from '../context/UserContext';
+import { useLocalStorage } from 'react-haiku';
+import { useNavigate } from 'react-router-dom';
 import Constants from '../utils/Constants';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { auth } from '../../firebase';
 
 const StudentRegisterScreen = () => {
   const [email, setEmail] = useState('');
@@ -12,18 +17,47 @@ const StudentRegisterScreen = () => {
   const [password, setPassword] = useState('');
   const [confPass, setConfPass] = useState('');
 
-  const [state, dispatch] = useSnackBarState();
+  const [userType, setUserType] = useLocalStorage('userType');
+  const [snackBarState, snackBarDispatch] = useSnackBarState();
+  const [userState, userDispatch] = useUserState();
+  const navigate = useNavigate();
 
-  function registerStudent(e) {
+  async function registerStudent(e) {
     e.preventDefault();
 
+    if (!email || !firstName || !lastName || !password || !confPass) {
+      snackBarDispatch({
+        type: Constants.SHOW_SNACKBAR,
+        payload: '❌❌ Please fill all the fields',
+      });
+      return;
+    }
+
     if (password !== confPass) {
-      dispatch({
+      snackBarDispatch({
         type: Constants.SHOW_SNACKBAR,
         payload: 'Check your passwords again',
       });
       return;
     }
+
+    await createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user);
+        userDispatch({ type: Constants.SIGN_IN, payload: user });
+        setUserType('student');
+        navigate('/student/app');
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
+
+    // updating user's display name
+
+    updateProfile(auth.currentUser, {
+      displayName: firstName.trim() + lastName.trim(),
+    });
   }
 
   return (

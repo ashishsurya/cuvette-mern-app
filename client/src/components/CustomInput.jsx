@@ -5,6 +5,7 @@ const CustomInput = ({ id,value, setValue, label, placeHolder,type }) => {
     <div className='flex flex-1 flex-col items-start my-3 gap-2'>
       <label htmlFor={id} className="text-base text-gray-700">{label}</label>
       <input
+        required
         id={id}
         type={type}
         placeholder={placeHolder}
